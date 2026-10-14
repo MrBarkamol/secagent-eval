@@ -1,0 +1,77 @@
+{
+  "description": "Main set with every // comment line removed. Used to measure how much comments describing the bug helped the LLM.",
+  "samples": [
+    {
+      "id": "php_sqli",
+      "cwe": "CWE-89",
+      "accept_cwes": [
+        "CWE-89"
+      ],
+      "name": "SQL injection via string concatenation",
+      "vulnerable_file": "php/sqli_vulnerable.php",
+      "fixed_file": "php/sqli_fixed.php",
+      "vuln_line": 13,
+      "llm_value": "low",
+      "note": "Clean source->sink taint flow. Static tools handle this well; the LLM mainly adds explanation."
+    },
+    {
+      "id": "php_cmdi",
+      "cwe": "CWE-78",
+      "accept_cwes": [
+        "CWE-78",
+        "CWE-77"
+      ],
+      "name": "OS command injection via shell_exec",
+      "vulnerable_file": "php/cmdi_vulnerable.php",
+      "fixed_file": "php/cmdi_fixed.php",
+      "vuln_line": 12,
+      "llm_value": "medium",
+      "note": "The fix (escapeshellarg) still concatenates, so naive concat-based detectors false-positive on the fixed version. Recognizing the sanitizer requires understanding, not just a pattern."
+    },
+    {
+      "id": "php_pathtraversal",
+      "cwe": "CWE-22",
+      "accept_cwes": [
+        "CWE-22",
+        "CWE-23",
+        "CWE-36"
+      ],
+      "name": "Path traversal via unvalidated filename",
+      "vulnerable_file": "php/pathtraversal_vulnerable.php",
+      "fixed_file": "php/pathtraversal_fixed.php",
+      "vuln_line": 12,
+      "llm_value": "medium",
+      "note": "Detecting the vuln is pattern-ish; confirming that basename() plus the is_file() check actually neutralizes it is reasoning."
+    },
+    {
+      "id": "php_massassign",
+      "cwe": "CWE-915",
+      "accept_cwes": [
+        "CWE-915",
+        "CWE-913"
+      ],
+      "name": "Mass assignment via request->all()",
+      "vulnerable_file": "php/massassign_vulnerable.php",
+      "fixed_file": "php/massassign_fixed.php",
+      "vuln_line": 12,
+      "llm_value": "high",
+      "note": "Whether this is exploitable depends on the model's $fillable/$guarded config, which lives in another file. True confirmation needs cross-file context an LLM agent can gather but a single-file regex cannot."
+    },
+    {
+      "id": "php_idor",
+      "cwe": "CWE-639",
+      "accept_cwes": [
+        "CWE-639",
+        "CWE-863",
+        "CWE-862",
+        "CWE-285"
+      ],
+      "name": "IDOR / broken object-level authorization",
+      "vulnerable_file": "php/idor_vulnerable.php",
+      "fixed_file": "php/idor_fixed.php",
+      "vuln_line": 12,
+      "llm_value": "high",
+      "note": "There is no dangerous function call here at all. The bug is the ABSENCE of an ownership check. Pattern-matchers cannot see a missing thing; this needs reasoning about intent. Authorization CWEs (639/863/862/285) are all acceptable labels for it."
+    }
+  ]
+}

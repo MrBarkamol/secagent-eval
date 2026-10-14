@@ -1,0 +1,57 @@
+rules:
+  # --- CWE-89: SQL injection via string concatenation in a query ---
+  - id: php-sqli-concat
+    languages: [php]
+    severity: ERROR
+    message: SQL query built with string concatenation; use parameter binding.
+    metadata:
+      cwe: "CWE-89"
+    patterns:
+      - pattern-either:
+          - pattern: DB::select($A . $B)
+          - pattern: DB::statement($A . $B)
+          - pattern: DB::raw($A . $B)
+
+  # --- CWE-78: OS command injection ---
+  # Vulnerable version concatenates raw input into the shell string.
+  # Fixed version wraps input in escapeshellarg(), excluded via pattern-not.
+  - id: php-command-injection
+    languages: [php]
+    severity: ERROR
+    message: OS command built from unescaped input; wrap arguments with escapeshellarg().
+    metadata:
+      cwe: "CWE-78"
+    patterns:
+      - pattern-either:
+          - pattern: shell_exec($A . $B)
+          - pattern: exec($A . $B)
+          - pattern: system($A . $B)
+          - pattern: passthru($A . $B)
+      - pattern-not: shell_exec($A . escapeshellarg(...))
+      - pattern-not: exec($A . escapeshellarg(...))
+      - pattern-not: system($A . escapeshellarg(...))
+      - pattern-not: passthru($A . escapeshellarg(...))
+
+  # --- CWE-22: Path traversal ---
+  - id: php-path-traversal
+    languages: [php]
+    severity: ERROR
+    message: File path built from user input without sanitization.
+    metadata:
+      cwe: "CWE-22"
+    patterns:
+      - pattern: storage_path($A . $B)
+      - pattern-not: storage_path($A . basename(...))
+
+  # --- CWE-915: Mass assignment ---
+  - id: php-mass-assignment
+    languages: [php]
+    severity: ERROR
+    message: Mass assignment from request->all(); whitelist fields explicitly.
+    metadata:
+      cwe: "CWE-915"
+    patterns:
+      - pattern-either:
+          - pattern: $M::create($REQ->all())
+          - pattern: $M::fill($REQ->all())
+          - pattern: $M->update($REQ->all())

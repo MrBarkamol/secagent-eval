@@ -1,0 +1,15 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Secrets — never commit
+.env
+.env.*
+
+# Downloaded third-party rules (fetch with the curl command in README)
+semgrep_rules/community-php.yml
+
+# OS / archives
+.DS_Store
+*.zip

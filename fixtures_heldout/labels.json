@@ -1,0 +1,49 @@
+{
+  "description": "HELD-OUT test set. Written after the Semgrep rules, agent prompts and knowledge base were frozen, in code shapes different from the main fixtures, with no explanatory comments. None of the rules, prompts or knowledge-base entries were changed after these results were seen.",
+  "samples": [
+    {
+      "id": "ho_sqli_whereraw",
+      "cwe": "CWE-89",
+      "accept_cwes": ["CWE-89"],
+      "name": "SQL injection via Eloquent whereRaw concatenation",
+      "vulnerable_file": "php/sqli_whereraw_vulnerable.php",
+      "fixed_file": "php/sqli_whereraw_fixed.php",
+      "vuln_line": 13,
+      "llm_value": "low",
+      "note": "Same bug class as the main set, but through whereRaw instead of DB::select."
+    },
+    {
+      "id": "ho_cmdi_sprintf",
+      "cwe": "CWE-78",
+      "accept_cwes": ["CWE-78", "CWE-77"],
+      "name": "Command injection via exec(sprintf(...))",
+      "vulnerable_file": "php/cmdi_sprintf_vulnerable.php",
+      "fixed_file": "php/cmdi_sprintf_fixed.php",
+      "vuln_line": 12,
+      "llm_value": "medium",
+      "note": "Input reaches the shell through sprintf rather than string concatenation."
+    },
+    {
+      "id": "ho_idor_binding",
+      "cwe": "CWE-639",
+      "accept_cwes": ["CWE-639", "CWE-863", "CWE-862", "CWE-285"],
+      "name": "Missing authorization on route-model-bound update",
+      "vulnerable_file": "php/idor_binding_vulnerable.php",
+      "fixed_file": "php/idor_binding_fixed.php",
+      "vuln_line": 13,
+      "llm_value": "high",
+      "note": "No findOrFail and no comment: the model is injected by route binding and updated with no authorize() call."
+    },
+    {
+      "id": "ho_open_redirect",
+      "cwe": "CWE-601",
+      "accept_cwes": ["CWE-601"],
+      "name": "Open redirect from query parameter",
+      "vulnerable_file": "php/redirect_vulnerable.php",
+      "fixed_file": "php/redirect_fixed.php",
+      "vuln_line": 13,
+      "llm_value": "medium",
+      "note": "A bug class that does not appear in the main set at all."
+    }
+  ]
+}

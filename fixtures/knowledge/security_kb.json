@@ -1,0 +1,131 @@
+{
+  "description": "A small local knowledge base of common web-application weaknesses, written independently of the test fixtures. It intentionally covers far more classes than the fixtures test, so retrieval must SELECT the relevant entry rather than being handed the answer. Each entry lists code-level signs (keywords) a retriever can match against, a short description, and the fix.",
+  "entries": [
+    {
+      "cwe": "CWE-89",
+      "name": "SQL injection",
+      "keywords": "DB select raw query sql statement where concatenation interpolation PDO mysqli",
+      "description": "User input is concatenated or interpolated into a SQL query string, letting an attacker alter the query.",
+      "fix": "Use parameter binding / prepared statements; never concatenate input into SQL."
+    },
+    {
+      "cwe": "CWE-78",
+      "name": "OS command injection",
+      "keywords": "shell_exec exec system passthru popen proc_open command shell process",
+      "description": "User input reaches a shell command, letting an attacker run arbitrary OS commands.",
+      "fix": "Avoid shells; pass arguments as arrays, or escape with escapeshellarg()."
+    },
+    {
+      "cwe": "CWE-22",
+      "name": "Path traversal",
+      "keywords": "file path storage_path file_get_contents fopen readfile download include require filename dotdot",
+      "description": "User input controls a file path, letting an attacker reach files outside the intended directory with ../ sequences.",
+      "fix": "Resolve with basename(), validate against a whitelist, and confirm the final path stays in the allowed directory."
+    },
+    {
+      "cwe": "CWE-915",
+      "name": "Mass assignment",
+      "keywords": "create fill update request all input model fillable guarded attributes assignment",
+      "description": "A model is populated directly from all request fields, letting an attacker set fields they should not (e.g. is_admin).",
+      "fix": "Whitelist fields with validate()/only(), or set $fillable/$guarded explicitly."
+    },
+    {
+      "cwe": "CWE-639",
+      "name": "Broken object-level authorization (IDOR)",
+      "keywords": "findOrFail find first where id record owner user belongs authorize policy invoice order account",
+      "description": "A record is fetched by an id taken from the request with no check that it belongs to the current user, so any user can read or change another user's data by changing the id.",
+      "fix": "Scope the query to the current user (e.g. request()->user()->invoices()->findOrFail($id)) or call an authorization policy."
+    },
+    {
+      "cwe": "CWE-862",
+      "name": "Missing authorization",
+      "keywords": "authorize policy gate can middleware permission role admin check access control",
+      "description": "A sensitive action or route runs without checking that the caller is permitted to perform it.",
+      "fix": "Add an explicit authorization check (policy, gate, or middleware) before the action."
+    },
+    {
+      "cwe": "CWE-79",
+      "name": "Cross-site scripting (XSS)",
+      "keywords": "echo print html blade raw unescaped innerHTML render output input script",
+      "description": "Unescaped user input is written into an HTML page, letting an attacker inject script that runs in other users' browsers.",
+      "fix": "Escape output by default (Blade {{ }} auto-escapes); avoid raw/unescaped output of user data."
+    },
+    {
+      "cwe": "CWE-918",
+      "name": "Server-side request forgery (SSRF)",
+      "keywords": "http client request url curl guzzle fetch base_url webhook proxy remote host",
+      "description": "The server makes a request to a URL supplied by the user, letting an attacker reach internal services.",
+      "fix": "Validate and whitelist destination hosts; block internal/link-local addresses."
+    },
+    {
+      "cwe": "CWE-601",
+      "name": "Open redirect",
+      "keywords": "redirect url next return location header to intended back",
+      "description": "The app redirects to a URL taken from the request without validation, aiding phishing.",
+      "fix": "Allow only relative paths or a whitelist of hosts."
+    },
+    {
+      "cwe": "CWE-502",
+      "name": "Insecure deserialization",
+      "keywords": "unserialize deserialize pickle yaml load marshal object stream",
+      "description": "Untrusted data is deserialized into objects, which can lead to code execution.",
+      "fix": "Avoid native deserialization of untrusted input; use safe formats like JSON."
+    },
+    {
+      "cwe": "CWE-798",
+      "name": "Hardcoded credentials",
+      "keywords": "password secret api_key token credential hardcoded key const",
+      "description": "Secrets are embedded directly in source code where anyone with the code can read them.",
+      "fix": "Load secrets from environment/secret storage, never commit them."
+    },
+    {
+      "cwe": "CWE-327",
+      "name": "Weak cryptography",
+      "keywords": "md5 sha1 des ecb random rand mt_rand hash encrypt cipher",
+      "description": "A weak or broken cryptographic primitive is used for security-sensitive work.",
+      "fix": "Use vetted algorithms (bcrypt/argon2 for passwords, AES-GCM for encryption) and a CSPRNG."
+    },
+    {
+      "cwe": "CWE-306",
+      "name": "Missing authentication",
+      "keywords": "route endpoint public middleware auth login guest unauthenticated",
+      "description": "A sensitive endpoint is reachable without any authentication.",
+      "fix": "Require authentication (auth middleware) on sensitive routes."
+    },
+    {
+      "cwe": "CWE-352",
+      "name": "Cross-site request forgery (CSRF)",
+      "keywords": "csrf token form post state-changing cookie session verify",
+      "description": "A state-changing request is accepted without a CSRF token, letting another site forge actions.",
+      "fix": "Require and verify CSRF tokens on state-changing requests."
+    },
+    {
+      "cwe": "CWE-200",
+      "name": "Sensitive data exposure",
+      "keywords": "log dump print response debug stack trace error leak expose",
+      "description": "Sensitive data (secrets, PII, stack traces) is exposed in responses or logs.",
+      "fix": "Disable debug output in production; redact secrets and PII from logs and responses."
+    },
+    {
+      "cwe": "CWE-434",
+      "name": "Unrestricted file upload",
+      "keywords": "upload file store move extension mime type image content",
+      "description": "Uploaded files are stored without validating type, allowing executable content to be served.",
+      "fix": "Validate type/extension, store outside the web root, and never execute uploads."
+    },
+    {
+      "cwe": "CWE-94",
+      "name": "Code injection / eval",
+      "keywords": "eval exec compile create_function dynamic code template render",
+      "description": "User input is evaluated as code or a template, allowing arbitrary execution.",
+      "fix": "Never evaluate user input; use safe parsers and sandboxed templating."
+    },
+    {
+      "cwe": "CWE-20",
+      "name": "Improper input validation",
+      "keywords": "validate input type cast length range filter sanitize request",
+      "description": "Input is used without validating type, range, or format, enabling many downstream bugs.",
+      "fix": "Validate every input against an explicit schema before use."
+    }
+  ]
+}
